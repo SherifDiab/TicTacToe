@@ -14,9 +14,20 @@ extends Control
 
 
 func _ready() -> void:
+	print("MainMenu: _ready() called")
+
+	# Verify nodes exist
+	if play_button == null:
+		push_error("MainMenu: PlayButton not found!")
+		return
+
+	print("MainMenu: PlayButton found: ", play_button)
+
 	_setup_options()
 	_connect_signals()
 	_update_stats_display()
+
+	print("MainMenu: Initialization complete")
 
 	# Show banner ad on menu
 	if AdsConfig.SHOW_BANNER_ON_MENU:
@@ -46,7 +57,11 @@ func _setup_options() -> void:
 
 ## Connects button signals
 func _connect_signals() -> void:
+	print("MainMenu: Connecting signals...")
+
 	play_button.pressed.connect(_on_play_pressed)
+	print("MainMenu: Play button signal connected")
+
 	quit_button.pressed.connect(_on_quit_pressed)
 	reset_stats_button.pressed.connect(_on_reset_stats_pressed)
 	reset_confirm_dialog.confirmed.connect(_on_reset_confirmed)
@@ -56,6 +71,8 @@ func _connect_signals() -> void:
 	# Update stats when they change
 	StatsStore.stats_updated.connect(_update_stats_display)
 
+	print("MainMenu: All signals connected")
+
 
 ## Updates the statistics display
 func _update_stats_display() -> void:
@@ -64,9 +81,11 @@ func _update_stats_display() -> void:
 
 ## Called when play button is pressed
 func _on_play_pressed() -> void:
+	print("MainMenu: Play button pressed")
+
 	# Apply settings to GameManager
 	var diff_index := difficulty_option.selected
-	var difficulty: TicTacToeAI.Difficulty
+	var difficulty: TicTacToeAI.Difficulty = TicTacToeAI.Difficulty.MEDIUM
 	match diff_index:
 		0:
 			difficulty = TicTacToeAI.Difficulty.EASY
@@ -74,6 +93,8 @@ func _on_play_pressed() -> void:
 			difficulty = TicTacToeAI.Difficulty.MEDIUM
 		2:
 			difficulty = TicTacToeAI.Difficulty.HARD
+		_:
+			difficulty = TicTacToeAI.Difficulty.MEDIUM
 
 	GameManager.set_difficulty(difficulty)
 
@@ -85,6 +106,7 @@ func _on_play_pressed() -> void:
 	AdsManager.hide_banner()
 
 	# Start game and go to game scene
+	print("MainMenu: Starting new game and transitioning to Game scene")
 	GameManager.start_new_game()
 	GameManager.go_to_game()
 
@@ -106,7 +128,7 @@ func _on_reset_confirmed() -> void:
 
 ## Called when difficulty option changes
 func _on_difficulty_changed(index: int) -> void:
-	var difficulty: TicTacToeAI.Difficulty
+	var difficulty: TicTacToeAI.Difficulty = TicTacToeAI.Difficulty.MEDIUM
 	match index:
 		0:
 			difficulty = TicTacToeAI.Difficulty.EASY
@@ -114,6 +136,8 @@ func _on_difficulty_changed(index: int) -> void:
 			difficulty = TicTacToeAI.Difficulty.MEDIUM
 		2:
 			difficulty = TicTacToeAI.Difficulty.HARD
+		_:
+			difficulty = TicTacToeAI.Difficulty.MEDIUM
 
 	GameManager.set_difficulty(difficulty)
 
