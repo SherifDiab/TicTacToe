@@ -67,7 +67,7 @@ func save_stats() -> void:
 func record_game(result: Dictionary) -> void:
 	stats["total_games"] += 1
 
-	var difficulty_suffix := "_" + result.get("difficulty", "medium").to_lower()
+	var difficulty_suffix: String = "_" + str(result.get("difficulty", "medium")).to_lower()
 
 	if result.get("is_draw", false):
 		stats["draws"] += 1

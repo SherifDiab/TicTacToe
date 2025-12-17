@@ -89,7 +89,7 @@ func show_banner(position: String = "") -> void:
 	if not _is_ready or _ads_service == null:
 		return
 
-	var pos := position if not position.is_empty() else _config.get("banner_position", "bottom")
+	var pos: String = position if not position.is_empty() else str(_config.get("banner_position", "bottom"))
 	_ads_service.show_banner(pos)
 
 

@@ -178,7 +178,7 @@ func get_move_count() -> int:
 
 
 ## Returns a string representation of the board (for debugging)
-func to_string() -> String:
+func get_board_string() -> String:
 	var result := ""
 	for i in range(9):
 		match cells[i]:
