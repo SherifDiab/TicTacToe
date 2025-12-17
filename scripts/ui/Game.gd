@@ -163,14 +163,14 @@ func _update_status_label() -> void:
 ## Updates button states
 func _update_button_states() -> void:
 	var info := game_controller.get_game_info()
-	var is_playing := info["state"] == GameController.GameState.PLAYING
-	var is_human_turn := info["current_turn"] == info["human_player"]
+	var is_playing: bool = info["state"] == GameController.GameState.PLAYING
+	var is_human_turn: bool = info["current_turn"] == info["human_player"]
 
 	# Enable/disable cells based on game state
 	var board := game_controller.get_board()
 	for i in range(9):
 		var cell := cell_buttons[i]
-		var can_click := is_playing and is_human_turn and board.is_legal_move(i)
+		var can_click: bool = is_playing and is_human_turn and board.is_legal_move(i)
 		cell.disabled = not can_click
 
 	# Hint button only during human turn
@@ -233,9 +233,9 @@ func _on_game_over(result: String, winner: int) -> void:
 
 ## Shows the game over panel
 func _show_game_over_panel(result: String, winner: int) -> void:
-	var human_player := game_controller.get_game_info()["human_player"]
-	var human_won := winner == human_player
-	var is_draw := result == "draw"
+	var human_player: int = game_controller.get_game_info()["human_player"]
+	var human_won: bool = winner == human_player
+	var is_draw: bool = result == "draw"
 
 	game_over_panel.show_result(is_draw, human_won, game_controller.can_use_rewarded())
 	game_over_panel.visible = true
