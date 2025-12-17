@@ -5,7 +5,7 @@ extends RefCounted
 
 
 ## Creates and returns the appropriate ads service for the current platform
-static func create_ads_service(config: Dictionary = {}) -> IAdsService:
+static func create_ads_service(config: Dictionary = {}):
 	# Check if running on Android
 	if OS.has_feature("android"):
 		print("[AdsServiceFactory] Android detected, creating AdMobAdsService")

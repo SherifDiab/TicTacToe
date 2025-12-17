@@ -12,8 +12,8 @@ signal rewarded_earned
 signal rewarded_closed
 signal consent_completed(granted: bool)
 
-# The ads service instance
-var _ads_service: IAdsService = null
+# The ads service instance (dynamic typing to avoid class_name load order issues)
+var _ads_service = null
 
 # Configuration
 var _config: Dictionary = {}
@@ -24,6 +24,8 @@ var _consent_obtained: bool = false
 
 
 func _ready() -> void:
+	print("AdsManager: _ready() called")
+
 	# Load configuration
 	_config = AdsConfig.get_config()
 
@@ -33,12 +35,15 @@ func _ready() -> void:
 
 	# Create appropriate ads service
 	_ads_service = AdsServiceFactory.create_ads_service(_config)
+	print("AdsManager: Ads service created: ", _ads_service)
 
 	# Connect signals
 	_connect_signals()
 
 	# Initialize
 	_initialize_ads()
+
+	print("AdsManager: Initialization complete")
 
 
 ## Connects signals from the ads service

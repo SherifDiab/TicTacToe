@@ -2,7 +2,16 @@
 ## AdMob implementation using Poing Studios Godot AdMob plugin.
 ## Reference: https://poingstudios.github.io/godot-admob-plugin/
 class_name AdMobAdsService
-extends IAdsService
+extends RefCounted
+
+# Signals for ad events (matching IAdsService interface)
+signal banner_loaded
+signal banner_failed(error: String)
+signal rewarded_loaded
+signal rewarded_failed(error: String)
+signal rewarded_earned
+signal rewarded_closed
+signal consent_completed(granted: bool)
 
 # Plugin singletons (will be null if plugin not available)
 var _admob_plugin = null

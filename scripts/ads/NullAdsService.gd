@@ -2,7 +2,16 @@
 ## Desktop/fallback implementation that does nothing but logs actions.
 ## Used when ads are not supported (non-Android platforms).
 class_name NullAdsService
-extends IAdsService
+extends RefCounted
+
+# Signals for ad events (matching IAdsService interface)
+signal banner_loaded
+signal banner_failed(error: String)
+signal rewarded_loaded
+signal rewarded_failed(error: String)
+signal rewarded_earned
+signal rewarded_closed
+signal consent_completed(granted: bool)
 
 var _initialized: bool = false
 var _banner_visible: bool = false

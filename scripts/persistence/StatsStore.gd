@@ -30,7 +30,9 @@ signal stats_updated
 
 
 func _ready() -> void:
+	print("StatsStore: _ready() called")
 	load_stats()
+	print("StatsStore: Initialization complete")
 
 
 ## Loads stats from disk
