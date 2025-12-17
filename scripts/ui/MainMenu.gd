@@ -83,6 +83,9 @@ func _update_stats_display() -> void:
 func _on_play_pressed() -> void:
 	print("MainMenu: Play button pressed")
 
+	# Disable play button to prevent double-clicks
+	play_button.disabled = true
+
 	# Apply settings to GameManager
 	var diff_index := difficulty_option.selected
 	var difficulty: TicTacToeAI.Difficulty = TicTacToeAI.Difficulty.MEDIUM
@@ -102,10 +105,19 @@ func _on_play_pressed() -> void:
 	var symbol: int = Board.PLAYER_X if symbol_index == 0 else Board.PLAYER_O
 	GameManager.set_player_symbol(symbol)
 
-	# Hide banner before transitioning
+	# Hide banner before showing interstitial
 	AdsManager.hide_banner()
 
-	# Start game and go to game scene
+	# Show interstitial ad before game if enabled
+	if AdsConfig.SHOW_INTERSTITIAL_BEFORE_GAME:
+		print("MainMenu: Showing interstitial ad before game")
+		AdsManager.show_interstitial(_start_game)
+	else:
+		_start_game()
+
+
+## Starts the game after ad is closed (or immediately if no ad)
+func _start_game() -> void:
 	print("MainMenu: Starting new game and transitioning to Game scene")
 	GameManager.start_new_game()
 	GameManager.go_to_game()

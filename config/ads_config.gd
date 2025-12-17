@@ -5,6 +5,7 @@
 ##
 ## Test IDs (safe for development):
 ##   Banner: ca-app-pub-3940256099942544/6300978111
+##   Interstitial: ca-app-pub-3940256099942544/1033173712
 ##   Rewarded: ca-app-pub-3940256099942544/5224354917
 ##   App ID: ca-app-pub-3940256099942544~3347511713
 ##
@@ -29,6 +30,10 @@ const ADMOB_APP_ID: String = "ca-app-pub-3940256099942544~3347511713"  # TEST ID
 ## Standard banner size: 320x50 (BANNER)
 const BANNER_AD_UNIT_ID: String = "ca-app-pub-3940256099942544/6300978111"  # TEST ID
 
+## Interstitial Ad Unit ID
+## Full-screen ad shown before game starts
+const INTERSTITIAL_AD_UNIT_ID: String = "ca-app-pub-3940256099942544/1033173712"  # TEST ID
+
 ## Rewarded Video Ad Unit ID
 const REWARDED_AD_UNIT_ID: String = "ca-app-pub-3940256099942544/5224354917"  # TEST ID
 
@@ -49,6 +54,12 @@ const SHOW_BANNER_ON_GAME_OVER: bool = true
 ## Banner position ("top" or "bottom")
 const BANNER_POSITION: String = "bottom"
 
+## Show interstitial ad before game starts
+const SHOW_INTERSTITIAL_BEFORE_GAME: bool = true
+
+## Preload interstitial ads
+const PRELOAD_INTERSTITIAL: bool = true
+
 ## Preload rewarded ads
 const PRELOAD_REWARDED: bool = true
 
@@ -62,11 +73,14 @@ static func get_config() -> Dictionary:
 	return {
 		"admob_app_id": ADMOB_APP_ID,
 		"banner_ad_unit_id": BANNER_AD_UNIT_ID,
+		"interstitial_ad_unit_id": INTERSTITIAL_AD_UNIT_ID,
 		"rewarded_ad_unit_id": REWARDED_AD_UNIT_ID,
 		"banner_position": BANNER_POSITION,
 		"show_banner_on_menu": SHOW_BANNER_ON_MENU,
 		"show_banner_during_game": SHOW_BANNER_DURING_GAME,
 		"show_banner_on_game_over": SHOW_BANNER_ON_GAME_OVER,
+		"show_interstitial_before_game": SHOW_INTERSTITIAL_BEFORE_GAME,
+		"preload_interstitial": PRELOAD_INTERSTITIAL,
 		"preload_rewarded": PRELOAD_REWARDED
 	}
 
@@ -81,6 +95,7 @@ static func print_config_status() -> void:
 	print("=== AdMob Configuration ===")
 	print("App ID: ", ADMOB_APP_ID)
 	print("Banner ID: ", BANNER_AD_UNIT_ID)
+	print("Interstitial ID: ", INTERSTITIAL_AD_UNIT_ID)
 	print("Rewarded ID: ", REWARDED_AD_UNIT_ID)
 	print("Using Test IDs: ", is_using_test_ids())
 	print("===========================")

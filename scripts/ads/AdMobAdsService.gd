@@ -7,6 +7,9 @@ extends RefCounted
 # Signals for ad events (matching IAdsService interface)
 signal banner_loaded
 signal banner_failed(error: String)
+signal interstitial_loaded
+signal interstitial_failed(error: String)
+signal interstitial_closed
 signal rewarded_loaded
 signal rewarded_failed(error: String)
 signal rewarded_earned
@@ -16,10 +19,12 @@ signal consent_completed(granted: bool)
 # Plugin singletons (will be null if plugin not available)
 var _admob_plugin = null
 var _is_initialized: bool = false
+var _interstitial_ready: bool = false
 var _rewarded_ready: bool = false
 var _banner_visible: bool = false
 
-# Callbacks for rewarded ads
+# Callbacks for ads
+var _interstitial_close_callback: Callable
 var _reward_callback: Callable
 var _fail_callback: Callable
 
@@ -75,6 +80,14 @@ func _connect_signals() -> void:
 		_admob_plugin.banner_loaded.connect(_on_banner_loaded)
 	if _admob_plugin.has_signal("banner_failed_to_load"):
 		_admob_plugin.banner_failed_to_load.connect(_on_banner_failed)
+
+	# Interstitial signals
+	if _admob_plugin.has_signal("interstitial_loaded"):
+		_admob_plugin.interstitial_loaded.connect(_on_interstitial_loaded)
+	if _admob_plugin.has_signal("interstitial_failed_to_load"):
+		_admob_plugin.interstitial_failed_to_load.connect(_on_interstitial_failed_to_load)
+	if _admob_plugin.has_signal("interstitial_closed"):
+		_admob_plugin.interstitial_closed.connect(_on_interstitial_closed)
 
 	# Rewarded signals
 	if _admob_plugin.has_signal("rewarded_ad_loaded"):
@@ -132,6 +145,47 @@ func hide_banner() -> void:
 		_admob_plugin.destroy_banner()
 		_banner_visible = false
 		print("AdMobAdsService: Banner hidden")
+
+
+## Loads an interstitial ad
+func load_interstitial(ad_unit_key: String = "interstitial") -> void:
+	if not _is_initialized or _admob_plugin == null:
+		interstitial_failed.emit("AdMob not initialized")
+		return
+
+	var ad_unit_id: String = str(_config.get("interstitial_ad_unit_id", ""))
+	if ad_unit_id.is_empty():
+		# Use test ad unit ID
+		ad_unit_id = "ca-app-pub-3940256099942544/1033173712"  # Google test interstitial
+		push_warning("AdMobAdsService: Using test interstitial ad unit ID")
+
+	_interstitial_ready = false
+	_admob_plugin.load_interstitial({
+		"ad_unit_id": ad_unit_id
+	})
+
+	print("AdMobAdsService: Loading interstitial ad")
+
+
+## Checks if interstitial ad is ready
+func is_interstitial_ready() -> bool:
+	return _interstitial_ready
+
+
+## Shows an interstitial ad
+func show_interstitial(on_close: Callable) -> void:
+	if not _is_initialized or _admob_plugin == null:
+		on_close.call()
+		return
+
+	if not _interstitial_ready:
+		interstitial_failed.emit("Interstitial ad not ready")
+		on_close.call()
+		return
+
+	_interstitial_close_callback = on_close
+	_admob_plugin.show_interstitial()
+	print("AdMobAdsService: Showing interstitial ad")
 
 
 ## Loads a rewarded ad
@@ -227,6 +281,29 @@ func _on_banner_failed(error_code: int) -> void:
 	var error_msg := "Banner failed to load: " + str(error_code)
 	print("AdMobAdsService: " + error_msg)
 	banner_failed.emit(error_msg)
+
+
+func _on_interstitial_loaded() -> void:
+	print("AdMobAdsService: Interstitial ad loaded")
+	_interstitial_ready = true
+	interstitial_loaded.emit()
+
+
+func _on_interstitial_failed_to_load(error_code: int) -> void:
+	var error_msg := "Interstitial ad failed to load: " + str(error_code)
+	print("AdMobAdsService: " + error_msg)
+	_interstitial_ready = false
+	interstitial_failed.emit(error_msg)
+
+
+func _on_interstitial_closed() -> void:
+	print("AdMobAdsService: Interstitial ad closed")
+	_interstitial_ready = false
+	if _interstitial_close_callback.is_valid():
+		_interstitial_close_callback.call()
+	interstitial_closed.emit()
+	# Preload next interstitial
+	load_interstitial()
 
 
 func _on_rewarded_loaded() -> void:

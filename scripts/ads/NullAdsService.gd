@@ -7,6 +7,9 @@ extends RefCounted
 # Signals for ad events (matching IAdsService interface)
 signal banner_loaded
 signal banner_failed(error: String)
+signal interstitial_loaded
+signal interstitial_failed(error: String)
+signal interstitial_closed
 signal rewarded_loaded
 signal rewarded_failed(error: String)
 signal rewarded_earned
@@ -15,9 +18,10 @@ signal consent_completed(granted: bool)
 
 var _initialized: bool = false
 var _banner_visible: bool = false
+var _interstitial_ready: bool = false
 var _rewarded_ready: bool = false
 
-# For testing on desktop: simulate rewarded being ready after load
+# For testing on desktop: simulate ads being ready after load
 var _simulate_ads: bool = true
 
 
@@ -42,6 +46,42 @@ func show_banner(position: String = "bottom") -> void:
 func hide_banner() -> void:
 	print("[NullAdsService] hide_banner() called")
 	_banner_visible = false
+
+
+## Loads interstitial ad (simulates loading for testing)
+func load_interstitial(ad_unit_key: String = "interstitial") -> void:
+	print("[NullAdsService] load_interstitial('%s') called" % ad_unit_key)
+
+	if _simulate_ads:
+		_interstitial_ready = true
+		interstitial_loaded.emit()
+		print("[NullAdsService] Simulated interstitial ad loaded")
+	else:
+		interstitial_failed.emit("Ads not available on this platform")
+
+
+## Checks if interstitial is ready
+func is_interstitial_ready() -> bool:
+	return _interstitial_ready
+
+
+## Shows interstitial ad (simulates for testing)
+func show_interstitial(on_close: Callable) -> void:
+	print("[NullAdsService] show_interstitial() called")
+
+	if _simulate_ads and _interstitial_ready:
+		print("[NullAdsService] Simulating interstitial shown and closed")
+		_interstitial_ready = false
+		interstitial_closed.emit()
+		if on_close.is_valid():
+			on_close.call()
+		# Reload for next use
+		load_interstitial()
+	else:
+		print("[NullAdsService] No interstitial ad available, proceeding anyway")
+		interstitial_failed.emit("No ad available")
+		if on_close.is_valid():
+			on_close.call()
 
 
 ## Loads rewarded ad (simulates loading for testing)

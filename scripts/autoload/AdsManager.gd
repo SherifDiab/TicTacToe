@@ -6,6 +6,9 @@ extends Node
 # Signals (proxied from ads service)
 signal banner_loaded
 signal banner_failed(error: String)
+signal interstitial_loaded
+signal interstitial_failed(error: String)
+signal interstitial_closed
 signal rewarded_loaded
 signal rewarded_failed(error: String)
 signal rewarded_earned
@@ -53,6 +56,9 @@ func _connect_signals() -> void:
 
 	_ads_service.banner_loaded.connect(_on_banner_loaded)
 	_ads_service.banner_failed.connect(_on_banner_failed)
+	_ads_service.interstitial_loaded.connect(_on_interstitial_loaded)
+	_ads_service.interstitial_failed.connect(_on_interstitial_failed)
+	_ads_service.interstitial_closed.connect(_on_interstitial_closed)
 	_ads_service.rewarded_loaded.connect(_on_rewarded_loaded)
 	_ads_service.rewarded_failed.connect(_on_rewarded_failed)
 	_ads_service.rewarded_earned.connect(_on_rewarded_earned)
@@ -77,7 +83,10 @@ func _on_consent_done() -> void:
 	_ads_service.initialize()
 	_is_ready = true
 
-	# Preload rewarded ad if configured
+	# Preload ads if configured
+	if _config.get("preload_interstitial", true):
+		_ads_service.load_interstitial()
+
 	if _config.get("preload_rewarded", true):
 		_ads_service.load_rewarded()
 
@@ -99,6 +108,31 @@ func hide_banner() -> void:
 		return
 
 	_ads_service.hide_banner()
+
+
+## Loads an interstitial ad
+func load_interstitial() -> void:
+	if not _is_ready or _ads_service == null:
+		return
+
+	_ads_service.load_interstitial()
+
+
+## Checks if interstitial ad is ready
+func is_interstitial_ready() -> bool:
+	if _ads_service == null:
+		return false
+
+	return _ads_service.is_interstitial_ready()
+
+
+## Shows interstitial ad with callback when closed
+func show_interstitial(on_close: Callable) -> void:
+	if not _is_ready or _ads_service == null:
+		on_close.call()
+		return
+
+	_ads_service.show_interstitial(on_close)
 
 
 ## Loads a rewarded ad
@@ -149,6 +183,18 @@ func _on_banner_loaded() -> void:
 
 func _on_banner_failed(error: String) -> void:
 	banner_failed.emit(error)
+
+
+func _on_interstitial_loaded() -> void:
+	interstitial_loaded.emit()
+
+
+func _on_interstitial_failed(error: String) -> void:
+	interstitial_failed.emit(error)
+
+
+func _on_interstitial_closed() -> void:
+	interstitial_closed.emit()
 
 
 func _on_rewarded_loaded() -> void:
