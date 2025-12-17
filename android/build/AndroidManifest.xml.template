@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    AndroidManifest.xml Template for TicTacToe with AdMob
+
+    IMPORTANT: This is a TEMPLATE file. The actual AndroidManifest.xml is generated
+    when you install the Android build template in Godot.
+
+    After installing the build template:
+    1. Godot will create the actual AndroidManifest.xml
+    2. Add the AdMob meta-data shown below inside the <application> tag
+
+    Steps:
+    1. In Godot: Project → Export → Add Android preset
+    2. Enable "Use Custom Build"
+    3. Click "Install Android Build Template"
+    4. Edit the generated android/build/AndroidManifest.xml
+    5. Add the AdMob Application ID meta-data
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.tictactoe"
+    android:versionCode="1"
+    android:versionName="1.0"
+    android:installLocation="auto">
+
+    <!-- Required permissions for ads -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:label="@string/godot_project_name_string"
+        android:allowBackup="false"
+        android:icon="@mipmap/icon"
+        android:isGame="true"
+        android:hasFragileUserData="false"
+        android:requestLegacyExternalStorage="false"
+        tools:ignore="GoogleAppIndexingWarning">
+
+        <!--
+        =====================================================
+        ADMOB CONFIGURATION - ADD THIS SECTION
+        =====================================================
+        Replace the value with your actual AdMob App ID
+
+        TEST App ID (for development):
+        ca-app-pub-3940256099942544~3347511713
+
+        PRODUCTION App ID (replace with yours):
+        ca-app-pub-XXXXXXXXXXXXXXXX~YYYYYYYYYY
+        -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713"/>
+
+        <!--
+        Optional: Delay app measurement until consent is obtained (GDPR)
+        Uncomment if using UMP consent flow
+        -->
+        <!--
+        <meta-data
+            android:name="com.google.android.gms.ads.DELAY_APP_MEASUREMENT_INIT"
+            android:value="true"/>
+        -->
+
+        <!-- Main Godot Activity - DO NOT MODIFY -->
+        <activity
+            android:name="com.godot.game.GodotApp"
+            android:label="@string/godot_project_name_string"
+            android:theme="@style/GodotAppSplashTheme"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:excludeFromRecents="false"
+            android:exported="true"
+            android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|density|keyboard|navigation|screenLayout|uiMode">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>
