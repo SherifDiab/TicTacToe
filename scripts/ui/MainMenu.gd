@@ -28,11 +28,40 @@ func _ready() -> void:
 	_update_stats_display()
 
 	print("MainMenu: Initialization complete")
-
+	
 	# Show banner ad on menu
 	if AdsConfig.SHOW_BANNER_ON_MENU:
+		print("MainMenu: Show Banner")
 		AdsManager.show_banner()
 
+func _on_initialization_complete(initialization_status : InitializationStatus) -> void:
+	print("MobileAds initialization complete")
+	print_all_values(initialization_status)
+	var ad_colony_app_options := AdColonyAppOptions.new()
+	print("set values ad_colony")
+	ad_colony_app_options.set_privacy_consent_string(AdColonyAppOptions.CCPA, "STRIaNG CCPA")
+	ad_colony_app_options.set_privacy_framework_required(AdColonyAppOptions.CCPA, false)
+	ad_colony_app_options.set_user_id("asdaaaad")
+	ad_colony_app_options.set_test_mode(false)
+	
+	print(ad_colony_app_options.get_privacy_consent_string(AdColonyAppOptions.CCPA))
+	print(ad_colony_app_options.get_privacy_framework_required(AdColonyAppOptions.CCPA))
+	print(ad_colony_app_options.get_user_id())
+	print(ad_colony_app_options.get_test_mode())
+	
+	if OS.get_name() == "iOS":
+		#FBAdSettings is available only for iOS, Google didn't put this method on Android SDK
+		FBAdSettings.set_advertiser_tracking_enabled(true)
+		
+	Vungle.update_ccpa_status(Vungle.Consent.OPTED_IN)
+	Vungle.update_ccpa_status(Vungle.Consent.OPTED_OUT)
+	Vungle.update_consent_status(Vungle.Consent.OPTED_IN, "message1")
+	Vungle.update_consent_status(Vungle.Consent.OPTED_OUT, "message2")
+
+func print_all_values(initialization_status : InitializationStatus) -> void:
+	for key in initialization_status.adapter_status_map:
+		var adapterStatus : AdapterStatus = initialization_status.adapter_status_map[key]
+		prints("Key:", key, "Latency:", adapterStatus.latency, "Initialization State:", adapterStatus.initialization_state, "Description:", adapterStatus.description)
 
 func _exit_tree() -> void:
 	# Hide banner when leaving menu

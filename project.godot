@@ -12,8 +12,8 @@ config_version=5
 
 config/name="TicTacToe"
 config/description="A polished Tic-Tac-Toe game with Player vs Engine mode and AdMob monetization"
-run/main_scene="res://scenes/MainMenu.tscn"
-config/features=PackedStringArray("4.2", "Mobile")
+run/main_scene="uid://bxl3m0k4frj2r"
+config/features=PackedStringArray("4.5", "Mobile")
 config/icon="res://icon.svg"
 
 [autoload]
@@ -29,6 +29,10 @@ window/size/viewport_height=960
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/handheld/orientation=1
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/admob/plugin.cfg")
 
 [input_devices]
 

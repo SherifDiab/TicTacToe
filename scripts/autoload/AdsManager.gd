@@ -99,6 +99,7 @@ func show_banner(position: String = "") -> void:
 		return
 
 	var pos: String = position if not position.is_empty() else str(_config.get("banner_position", "bottom"))
+	print("MainMenu: Show Banner pos: " + pos)
 	_ads_service.show_banner(pos)
 
 
