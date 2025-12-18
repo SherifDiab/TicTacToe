@@ -24,18 +24,19 @@ extends RefCounted
 ## AdMob Application ID
 ## This is also configured in android/build/AndroidManifest.xml
 ## MUST match the value in AndroidManifest for Android builds
-const ADMOB_APP_ID: String = "ca-app-pub-3788849764188756~5393305121"  # TEST ID
+## Using Google TEST IDs - replace with your real IDs when AdMob account is approved
+const ADMOB_APP_ID: String = "ca-app-pub-3940256099942544~3347511713"  # GOOGLE TEST APP ID
 
 ## Banner Ad Unit ID
 ## Standard banner size: 320x50 (BANNER)
-const BANNER_AD_UNIT_ID: String = "ca-app-pub-3788849764188756/9196818765"  # TEST ID
+const BANNER_AD_UNIT_ID: String = "ca-app-pub-3940256099942544/6300978111"  # GOOGLE TEST BANNER
 
 ## Interstitial Ad Unit ID
 ## Full-screen ad shown before game starts
-const INTERSTITIAL_AD_UNIT_ID: String = "ca-app-pub-3788849764188756/3669159919"  # TEST ID
+const INTERSTITIAL_AD_UNIT_ID: String = "ca-app-pub-3940256099942544/1033173712"  # GOOGLE TEST INTERSTITIAL
 
 ## Rewarded Video Ad Unit ID
-const REWARDED_AD_UNIT_ID: String = "ca-app-pub-3788849764188756/8888222222"  # TEST ID
+const REWARDED_AD_UNIT_ID: String = "ca-app-pub-3940256099942544/5224354917"  # GOOGLE TEST REWARDED
 
 
 # =============================================================================

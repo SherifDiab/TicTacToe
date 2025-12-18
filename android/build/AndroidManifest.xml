@@ -49,9 +49,11 @@
             </intent-filter>
         </activity>
 
+<!-- AdMob App ID - Using Google TEST ID for development -->
+<!-- Replace with your real App ID when your AdMob account is approved -->
 <meta-data
     android:name="com.google.android.gms.ads.APPLICATION_ID"
-    android:value="ca-app-pub-3788849764188756~5393305121"/>
+    android:value="ca-app-pub-3940256099942544~3347511713"/>
 
 
     </application>
