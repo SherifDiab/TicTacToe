@@ -1,6 +1,7 @@
 ## NullAdsService.gd
 ## Desktop/fallback implementation that does nothing but logs actions.
-## Used when ads are not supported (non-Android platforms).
+## Used when ads are not supported (non-Android platforms) or when
+## AdMob plugin is missing on mobile.
 class_name NullAdsService
 extends RefCounted
 
@@ -20,18 +21,31 @@ var _initialized: bool = false
 var _banner_visible: bool = false
 var _interstitial_ready: bool = false
 var _rewarded_ready: bool = false
+var _is_mobile_fallback: bool = false
 
 # For testing on desktop: simulate ads being ready after load
 var _simulate_ads: bool = true
 
 
 func _init() -> void:
-	pass
+	# Check if we're on mobile but using NullAdsService (plugin missing)
+	_is_mobile_fallback = OS.has_feature("android") or OS.has_feature("ios")
+	if _is_mobile_fallback:
+		push_error("======================================================")
+		push_error("NullAdsService: Running on mobile WITHOUT AdMob plugin!")
+		push_error("NO ADS WILL BE DISPLAYED!")
+		push_error("Please install the Poing Studios Godot AdMob plugin.")
+		push_error("See ADMOB_SETUP.md for installation instructions.")
+		push_error("======================================================")
 
 
 ## Initializes the null service (just logs)
 func initialize() -> void:
-	print("[NullAdsService] Initialize called (ads disabled on this platform)")
+	if _is_mobile_fallback:
+		print("[NullAdsService] WARNING: Mobile platform but AdMob plugin missing!")
+		print("[NullAdsService] Ads will be simulated but NOT shown on screen")
+	else:
+		print("[NullAdsService] Desktop mode - ads simulation enabled")
 	_initialized = true
 
 

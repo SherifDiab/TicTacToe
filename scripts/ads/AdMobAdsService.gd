@@ -41,16 +41,33 @@ func initialize() -> void:
 	if _is_initialized:
 		return
 
+	print("AdMobAdsService: Checking for AdMob plugin...")
+	print("AdMobAdsService: Platform = ", OS.get_name())
+	print("AdMobAdsService: Has android feature = ", OS.has_feature("android"))
+
+	# List all available singletons for debugging
+	print("AdMobAdsService: Available singletons: ")
+	for singleton_name in Engine.get_singleton_list():
+		print("  - ", singleton_name)
+
 	# Check if AdMob plugin is available
 	if not Engine.has_singleton("AdMob"):
-		push_warning("AdMobAdsService: AdMob plugin not found. Ads will not work.")
+		push_error("AdMobAdsService: AdMob plugin NOT FOUND!")
+		push_error("AdMobAdsService: Please install the Poing Studios Godot AdMob Plugin:")
+		push_error("  1. Download from: https://github.com/poing-studios/godot-admob-android/releases")
+		push_error("  2. Copy 'addons/admob' to your project's addons folder")
+		push_error("  3. Copy 'android/plugins' content to your android/plugins folder")
+		push_error("  4. Enable 'Use Custom Build' in Android export settings")
+		push_error("  5. Enable 'Godot AdMob' plugin in Android export plugins")
 		return
 
 	_admob_plugin = Engine.get_singleton("AdMob")
 
 	if _admob_plugin == null:
-		push_warning("AdMobAdsService: Failed to get AdMob singleton.")
+		push_error("AdMobAdsService: Failed to get AdMob singleton even though it exists!")
 		return
+
+	print("AdMobAdsService: AdMob plugin FOUND successfully!")
 
 	# Connect signals from the plugin
 	_connect_signals()
@@ -110,7 +127,10 @@ func _connect_signals() -> void:
 
 ## Shows a banner ad
 func show_banner(position: String = "bottom") -> void:
+	print("AdMobAdsService: show_banner() called, initialized=", _is_initialized, ", plugin=", _admob_plugin)
+
 	if not _is_initialized or _admob_plugin == null:
+		print("AdMobAdsService: Cannot show banner - not initialized!")
 		banner_failed.emit("AdMob not initialized")
 		return
 
@@ -118,13 +138,15 @@ func show_banner(position: String = "bottom") -> void:
 	if ad_unit_id.is_empty():
 		# Use test ad unit ID
 		ad_unit_id = "ca-app-pub-3940256099942544/6300978111"  # Google test banner
-		push_warning("AdMobAdsService: Using test banner ad unit ID")
+		print("AdMobAdsService: Using test banner ad unit ID: ", ad_unit_id)
 
 	# Position: TOP or BOTTOM
 	var pos_enum: int = 1 if position.to_lower() == "top" else 0  # 0 = BOTTOM, 1 = TOP
 
 	# Banner size: BANNER (320x50)
 	var size := "BANNER"
+
+	print("AdMobAdsService: Calling load_banner with ad_unit_id=", ad_unit_id, ", position=", pos_enum, ", size=", size)
 
 	_admob_plugin.load_banner({
 		"ad_unit_id": ad_unit_id,
@@ -133,7 +155,7 @@ func show_banner(position: String = "bottom") -> void:
 	})
 
 	_banner_visible = true
-	print("AdMobAdsService: Loading banner ad")
+	print("AdMobAdsService: Banner load request sent")
 
 
 ## Hides the banner ad
@@ -149,7 +171,10 @@ func hide_banner() -> void:
 
 ## Loads an interstitial ad
 func load_interstitial(ad_unit_key: String = "interstitial") -> void:
+	print("AdMobAdsService: load_interstitial() called, initialized=", _is_initialized, ", plugin=", _admob_plugin)
+
 	if not _is_initialized or _admob_plugin == null:
+		print("AdMobAdsService: Cannot load interstitial - not initialized!")
 		interstitial_failed.emit("AdMob not initialized")
 		return
 
@@ -157,14 +182,15 @@ func load_interstitial(ad_unit_key: String = "interstitial") -> void:
 	if ad_unit_id.is_empty():
 		# Use test ad unit ID
 		ad_unit_id = "ca-app-pub-3940256099942544/1033173712"  # Google test interstitial
-		push_warning("AdMobAdsService: Using test interstitial ad unit ID")
+		print("AdMobAdsService: Using test interstitial ad unit ID: ", ad_unit_id)
 
 	_interstitial_ready = false
+	print("AdMobAdsService: Calling load_interstitial with ad_unit_id=", ad_unit_id)
 	_admob_plugin.load_interstitial({
 		"ad_unit_id": ad_unit_id
 	})
 
-	print("AdMobAdsService: Loading interstitial ad")
+	print("AdMobAdsService: Interstitial load request sent")
 
 
 ## Checks if interstitial ad is ready

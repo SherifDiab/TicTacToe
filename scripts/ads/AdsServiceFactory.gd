@@ -6,15 +6,32 @@ extends RefCounted
 
 ## Creates and returns the appropriate ads service for the current platform
 static func create_ads_service(config: Dictionary = {}):
+	print("[AdsServiceFactory] Platform: ", OS.get_name())
+	print("[AdsServiceFactory] Android feature: ", OS.has_feature("android"))
+	print("[AdsServiceFactory] iOS feature: ", OS.has_feature("ios"))
+	print("[AdsServiceFactory] AdMob singleton available: ", Engine.has_singleton("AdMob"))
+
 	# Check if running on Android
 	if OS.has_feature("android"):
-		print("[AdsServiceFactory] Android detected, creating AdMobAdsService")
-		return AdMobAdsService.new(config)
+		# Check if AdMob plugin is available
+		if Engine.has_singleton("AdMob"):
+			print("[AdsServiceFactory] Android + AdMob plugin found, creating AdMobAdsService")
+			return AdMobAdsService.new(config)
+		else:
+			push_error("[AdsServiceFactory] Android detected but AdMob plugin NOT INSTALLED!")
+			push_error("[AdsServiceFactory] Please follow ADMOB_SETUP.md to install the Poing Studios AdMob plugin")
+			print("[AdsServiceFactory] Falling back to NullAdsService (no ads will show)")
+			return NullAdsService.new()
 
 	# Check if running on iOS (for future support)
 	if OS.has_feature("ios"):
-		print("[AdsServiceFactory] iOS detected, creating AdMobAdsService")
-		return AdMobAdsService.new(config)
+		if Engine.has_singleton("AdMob"):
+			print("[AdsServiceFactory] iOS + AdMob plugin found, creating AdMobAdsService")
+			return AdMobAdsService.new(config)
+		else:
+			push_error("[AdsServiceFactory] iOS detected but AdMob plugin NOT INSTALLED!")
+			print("[AdsServiceFactory] Falling back to NullAdsService (no ads will show)")
+			return NullAdsService.new()
 
 	# Desktop or other platforms: use null service
 	print("[AdsServiceFactory] Desktop/other platform detected, creating NullAdsService")
