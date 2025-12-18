@@ -34,8 +34,8 @@ func _init() -> void:
 		push_error("======================================================")
 		push_error("NullAdsService: Running on mobile WITHOUT AdMob plugin!")
 		push_error("NO ADS WILL BE DISPLAYED!")
-		push_error("Please install the Poing Studios Godot AdMob plugin.")
-		push_error("See ADMOB_SETUP.md for installation instructions.")
+		push_error("PoingGodotAdMob singleton not found.")
+		push_error("Make sure 'AdMob' plugin is enabled in Export -> Plugins")
 		push_error("======================================================")
 
 

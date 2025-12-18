@@ -9,27 +9,30 @@ static func create_ads_service(config: Dictionary = {}):
 	print("[AdsServiceFactory] Platform: ", OS.get_name())
 	print("[AdsServiceFactory] Android feature: ", OS.has_feature("android"))
 	print("[AdsServiceFactory] iOS feature: ", OS.has_feature("ios"))
-	print("[AdsServiceFactory] AdMob singleton available: ", Engine.has_singleton("AdMob"))
+
+	# Check for new Poing AdMob plugin (uses PoingGodotAdMob singleton)
+	var has_poing_admob: bool = Engine.has_singleton("PoingGodotAdMob")
+	print("[AdsServiceFactory] PoingGodotAdMob singleton available: ", has_poing_admob)
 
 	# Check if running on Android
 	if OS.has_feature("android"):
 		# Check if AdMob plugin is available
-		if Engine.has_singleton("AdMob"):
-			print("[AdsServiceFactory] Android + AdMob plugin found, creating AdMobAdsService")
+		if has_poing_admob:
+			print("[AdsServiceFactory] Android + Poing AdMob plugin found, creating AdMobAdsService")
 			return AdMobAdsService.new(config)
 		else:
-			push_error("[AdsServiceFactory] Android detected but AdMob plugin NOT INSTALLED!")
-			push_error("[AdsServiceFactory] Please follow ADMOB_SETUP.md to install the Poing Studios AdMob plugin")
+			push_error("[AdsServiceFactory] Android detected but Poing AdMob plugin NOT INSTALLED!")
+			push_error("[AdsServiceFactory] Make sure 'AdMob' is enabled in Export -> Plugins")
 			print("[AdsServiceFactory] Falling back to NullAdsService (no ads will show)")
 			return NullAdsService.new()
 
 	# Check if running on iOS (for future support)
 	if OS.has_feature("ios"):
-		if Engine.has_singleton("AdMob"):
-			print("[AdsServiceFactory] iOS + AdMob plugin found, creating AdMobAdsService")
+		if has_poing_admob:
+			print("[AdsServiceFactory] iOS + Poing AdMob plugin found, creating AdMobAdsService")
 			return AdMobAdsService.new(config)
 		else:
-			push_error("[AdsServiceFactory] iOS detected but AdMob plugin NOT INSTALLED!")
+			push_error("[AdsServiceFactory] iOS detected but Poing AdMob plugin NOT INSTALLED!")
 			print("[AdsServiceFactory] Falling back to NullAdsService (no ads will show)")
 			return NullAdsService.new()
 
