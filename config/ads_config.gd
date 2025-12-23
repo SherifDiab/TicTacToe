@@ -56,13 +56,28 @@ const SHOW_BANNER_ON_GAME_OVER: bool = true
 const BANNER_POSITION: String = "bottom"
 
 ## Show interstitial ad before game starts
-const SHOW_INTERSTITIAL_BEFORE_GAME: bool = true
+## NOTE: Disabled for Families Policy compliance - interstitials can cause
+## "unclosable ads" violations. Enable only for apps targeting 13+ audience.
+const SHOW_INTERSTITIAL_BEFORE_GAME: bool = false
 
 ## Preload interstitial ads
-const PRELOAD_INTERSTITIAL: bool = true
+const PRELOAD_INTERSTITIAL: bool = false
 
 ## Preload rewarded ads
 const PRELOAD_REWARDED: bool = true
+
+
+# =============================================================================
+# FAMILIES POLICY / COPPA COMPLIANCE
+# =============================================================================
+
+## Set to true if app is designed for children (enables COPPA compliance)
+## This affects ad content and tracking behavior
+const IS_DESIGNED_FOR_FAMILIES: bool = false
+
+## Max ad content rating: "G", "PG", "T", "MA"
+## Use "G" for children's apps (most restrictive)
+const MAX_AD_CONTENT_RATING: String = "G"
 
 
 # =============================================================================
